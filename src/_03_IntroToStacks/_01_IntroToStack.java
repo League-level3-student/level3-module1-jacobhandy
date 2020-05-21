@@ -9,15 +9,29 @@ public class _01_IntroToStack {
 	public static void main(String[] args) {
 		//1. Create a Stack of Doubles
 		//   Don't forget to import the Stack class
-		
+		Stack<Double> numbers = new Stack<Double>();
 		//2. Use a loop to push 100 random doubles between 0 and 100 to the Stack.
-		
+		Random r = new Random();
+		Double x = null;
+		double rangeMin = 0;
+		double rangeMax = 100;
+		for(int a = 0; a < 100; a++) {
+			numbers.push( 100 * r.nextDouble());
+		}
 		//3. Ask the user to enter in two numbers between 0 and 100, inclusive. 
+		String value1 =JOptionPane.showInputDialog("Enter a minimum value");
+		String value2 = JOptionPane.showInputDialog("Enter a maximum value");
+		int minValue = Integer.parseInt(value1);;
+		int maxValue = Integer.parseInt(value2);;
 		
 		//4. Pop all the elements off of the Stack. Every time a double is popped that is
 		//   between the two numbers entered by the user, print it to the screen.
-		
-		
+		for(int a = 0; a < numbers.size(); a++) {
+		numbers.pop();
+		if(numbers.pop() > minValue && numbers.pop() < maxValue) {
+			System.out.println(numbers.pop());
+		}
+		}
 		//   EXAMPLE:
 		//   NUM 1: 65
 		//   NUM 2: 75
