@@ -13,22 +13,36 @@ public class HangMan implements KeyListener{
 	JFrame frame;
 	JPanel panel;
 	JLabel text;
+	JLabel lifeDisplay;
 	String Words;
 	String Text = "";
 	String answer = "";
 	int words;
+	int lives = 10;
+	int correctCharacters = 0;
+	String length;
 	Stack<String> stack = new Stack<String>();
 	Utilities u = new Utilities();
 	public HangMan() {
-		 frame = new JFrame();
-		 panel = new JPanel();
-		 text = new JLabel();
-		frame.setSize(500, 500);
+		
 		
 	}
 	public void Run() {
+		correctCharacters = 0;
+		Text = "";
+		length = "";
+		answer = "";
+		 frame = new JFrame();
+		 panel = new JPanel();
+		 text = new JLabel();
+		 lifeDisplay = new JLabel();
+		frame.setSize(500, 500);
 		panel.add(text);
+		panel.add(lifeDisplay);
+		lives = 10;
+		lifeDisplay.setText("Lives: " + lives);
 		frame.add(panel);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.addKeyListener(this);
 		Words = JOptionPane.showInputDialog("How many words would you like to guess?");
 		 words = Integer.parseInt(Words);
@@ -44,16 +58,20 @@ public class HangMan implements KeyListener{
 		
 		//stack.pop();
 		Text += " ";
-		stack.push(Utilities.readRandomLineFromFile("dictionary.txt"));
-		String s = stack.pop();
-		answer += s;
-		for(int z = 0; z < s.length(); z++) {
+	
+		length = stack.push(Utilities.readRandomLineFromFile("dictionary.txt"));
+		//String s = stack.pop();
+		answer += stack.pop();
+		answer += " ";
+		for(int z = 0; z < answer.length(); z++) {
+			if(answer.charAt(a) != ' ') {
 			Text += "-";
-			
+			}
 		}
 		text.setText(Text);
 		System.out.println(answer);
 		}
+		 
 		}
 		
 		
@@ -93,15 +111,68 @@ public class HangMan implements KeyListener{
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
+		//System.out.println("Text: " + Text);
+		//System.out.println("answer: " + answer);
 		char input = e.getKeyChar();
+		String newAnswer = "";
+		boolean correct = false;
+		//Text = answer;
+		if(lives > 0) {
 		for(int a = 0; a < answer.length(); a++) {
-			if(answer.toCharArray()[a] == input) {
-				Text.toCharArray()[a] = answer.toCharArray()[a];
-				System.out.println(Text.toCharArray()[a]);
+			if(answer.charAt(a) == input) {
+				//System.out.println(answer.toCharArray()[a]);
+				//Text.toCharArray()[a] = answer.charAt(a);
+				newAnswer += input;
+				correct = true;
+			
+			
+			}
+			else {
+				newAnswer += Text.charAt(a);
+				
+			}
+			 if(Text.charAt(a) != '-') {
+				 correctCharacters++;
+				 System.out.println(correctCharacters + " correct characters");
+				 System.out.println(length.length());
+				 	if(correctCharacters > length.length() + 2) {
+				 	frame.dispose();
+					stack.clear();
+					int reset = JOptionPane.showConfirmDialog(null, "Congratulations! You guessed all your words! Play again?");
+					if(reset == 0) {
+						Run();
+						text.setText(Text);
+					}
+				}
+				 	else if (lives <= 0) {
+				 		frame.dispose();
+						stack.clear();
+						int reset = JOptionPane.showConfirmDialog(null, "Game Over! Play again?");
+						if(reset == 0) {
+							Run();
+							text.setText(Text);
+						}
+				 	}
+			 }
+		}
+		if(correct == false) {
+			lives--;
+		}
+		Text = newAnswer;
+		text.setText(Text);
+		lifeDisplay.setText("Lives: " + lives);
+		correct = false;
+		
+	}
+		
+		else {
+			frame.dispose();
+			stack.clear();
+			int reset = JOptionPane.showConfirmDialog(null, "Game Over! Play again?");
+			if(reset == 0) {
+				Run();
 			}
 		}
-		
-		
 	}
 	
 }
